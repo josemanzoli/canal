@@ -1,0 +1,23 @@
+version: '3'
+services:
+  99taxis-mysql:
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "canal"
+      MYSQL_USER: "canal"
+      MYSQL_PASSWORD: "canal"
+      MYSQL_DATABASE: "canaltest"
+
+  99taxis-canal:
+    build: .
+    container_name: 99taxis-canal
+    image: 99taxis-canal:latest
+#    env_file: .env
+    ports:
+      - "11111:11111"
+    links:
+      - 99taxis-mysql
+    depends_on:
+      - 99taxis-mysql
