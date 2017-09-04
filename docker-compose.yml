@@ -2,6 +2,9 @@ version: '3'
 services:
   99taxis-mysql:
     image: mysql
+    volumes:
+      - ./mysql_init:/docker-entrypoint-initdb.d
+      - ./mysql_conf/my.cnf:/usr/local/etc/my.cnf:ro
     ports:
       - "3306:3306"
     environment:
@@ -17,7 +20,7 @@ services:
 #    env_file: .env
     ports:
       - "11111:11111"
-    links:
-      - 99taxis-mysql
     depends_on:
       - 99taxis-mysql
+    command:
+      - /opt/canal/bin/startup.sh

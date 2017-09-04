@@ -8,8 +8,10 @@ WORKDIR /opt/canal
 
 RUN tar zxvf canal-deployer.tar.gz
 
+CMD rm -rf /opt/canal/conf/example/server.properties
+
+COPY server.properties /opt/canal/conf/example/server.properties
+
 RUN ls
 
 EXPOSE 11111
-
-RUN /opt/canal/bin/startup.sh
