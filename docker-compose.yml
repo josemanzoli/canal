@@ -1,26 +1,30 @@
-version: '3'
+version: '2.1'
 services:
-  99taxis-mysql:
+  99taxis_mysql:
+    container_name: 99taxis_mysql
     image: mysql
+    environment:
+          MYSQL_ROOT_PASSWORD: "canal"
+          MYSQL_USER: "canal"
+          MYSQL_PASSWORD: "canal"
+          MYSQL_DATABASE: "canaltest"
     volumes:
       - ./mysql_init:/docker-entrypoint-initdb.d
-      - ./mysql_conf/my.cnf:/usr/local/etc/my.cnf:ro
+      - ./mysql_conf/my.cnf:/etc/mysql/my.cnf:ro
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: "canal"
-      MYSQL_USER: "canal"
-      MYSQL_PASSWORD: "canal"
-      MYSQL_DATABASE: "canaltest"
+    expose:
+      - 3306
 
-  99taxis-canal:
+  99taxis_canal:
     build: .
-    container_name: 99taxis-canal
-    image: 99taxis-canal:latest
-#    env_file: .env
+    container_name: 99taxis_canal
+    image: 99taxis_canal:latest
     ports:
       - "11111:11111"
-    depends_on:
-      - 99taxis-mysql
+    entrypoint: dockerize -timeout 60s -wait tcp://99taxis_mysql:3306
     command:
       - /opt/canal/bin/startup.sh
+    links:
+      - 99taxis_mysql
+    tty: true
